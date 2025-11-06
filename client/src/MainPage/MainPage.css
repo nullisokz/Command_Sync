@@ -1,0 +1,132 @@
+/* ===================== */
+/* Färg-variabler globalt */
+/* ===================== */
+:root {
+  --bg-color: #212328;      /* bakgrund ytor */
+  --paper-color: #1c1e22;   /* panel/meny */
+  --primary-color: #ffb75a; /* accent */
+  --text-color: #ffffff;    /* text */
+  --text-muted: #e2e8f0;
+}
+
+/* ===================== */
+/* Layout / grundfärger  */
+/* ===================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  font-family: "Segoe UI", sans-serif;
+  padding: 2vh;
+  height: 96vh;
+  margin: auto;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border-radius: 12px;
+}
+.head-box { display:flex; justify-content:center; flex-direction:row; width:100%; align-items:center; height:10%; }
+.logo { height: 100%; }
+.subtitle { color: #94a3b8; margin-bottom: 1rem; }
+
+/* ===================== */
+/* Select-fältet (input) */
+/* ===================== */
+.custom-select .MuiSelect-select { color: var(--text-color); }
+
+/* Label: vit normalt, accent vid fokus */
+.custom-select .MuiInputLabel-root {
+  color: var(--text-color);
+  transition: color .2s ease;
+}
+.custom-select .MuiInputLabel-root.Mui-focused { color: var(--primary-color); }
+
+/* Outlined border: accent normalt → vit på hover/fokus */
+.custom-select .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary-color);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.custom-select .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color);
+}
+.custom-select .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--text-color);
+  box-shadow: 0 0 0 2px rgba(255,255,255,.12);
+}
+
+/* Pil-ikon: accent → vit när öppen/fokuserad */
+.custom-select .MuiSelect-icon {
+  color: var(--primary-color);
+  transition: color .2s ease, transform .2s ease;
+}
+.custom-select .Mui-focused .MuiSelect-icon,
+.custom-select .MuiSelect-iconOpen {
+  color: var(--text-color);
+  transform: rotate(180deg);
+}
+
+/* Caret + disabled */
+.custom-select .MuiOutlinedInput-input { caret-color: var(--primary-color); }
+.custom-select .Mui-disabled .MuiOutlinedInput-notchedOutline { border-color: rgba(255,255,255,.3); }
+.custom-select .Mui-disabled .MuiSelect-select,
+.custom-select .Mui-disabled .MuiInputLabel-root { color: rgba(255,255,255,.4); }
+
+/* ===================== */
+/* MENYN (portal) – global */
+/* ===================== */
+/* Pappret runt menyn */
+.app-theme .MuiMenu-paper {
+  background: var(--paper-color);
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 6px 18px rgba(0,0,0,.5);
+  color: var(--text-color);
+}
+
+/* Själva listan + items */
+.app-theme .MuiMenu-list { padding: 0; }
+
+.app-theme .MuiMenuItem-root {
+  color: var(--text-color);
+  transition: background-color .12s ease;
+}
+
+/* Hover & selected som följer musen snyggt */
+.app-theme .MuiMenuItem-root:hover {
+  background: rgba(255,255,255,.06);
+}
+.app-theme .MuiMenuItem-root.Mui-selected {
+  background: rgba(255,183,90,.18);
+}
+.app-theme .MuiMenuItem-root.Mui-selected:hover {
+  background: rgba(255,183,90,.26);
+}
+
+.command-detail { margin-top: 1rem; 
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: stretch;
+width: 80%;
+border: 1px dotted #ecba3e4f;
+padding: 1%;
+}
+.code-block {
+  background-color: #1b1b1c;
+  color: #3bdfa8;
+  padding: 1rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  margin-top: .5rem;
+  white-space: pre-wrap;      /* bevara \n men tillåt wrap */
+  word-break: break-word;     /* bryt ord vid behov */
+  overflow-wrap: anywhere;
+}
+
+/* Chips (om multiple) */
+.custom-select .MuiChip-root {
+  background: rgba(255,183,90,.18);
+  color: var(--text-color);
+  border: 1px solid var(--primary-color);
+}
+.custom-select .MuiChip-deleteIcon { color: var(--primary-color); }
+.custom-select .MuiChip-root:hover .MuiChip-deleteIcon { color: var(--text-color); }
