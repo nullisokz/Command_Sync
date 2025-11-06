@@ -1,0 +1,14 @@
+Ta ut alla command descriptions från en action
+sqlite> SELECT c.description
+   ...> FROM commands c
+   ...> JOIN actions_x_commands ac on c.id = ac.command_id
+   ...> WHERE ac.action_id = 1;
+
+_______
+
+Ta ut alla command descriptions och kod från en action
+   sqlite> SELECT c.description
+   ...> FROM commands c
+   ...> JOIN actions_x_commands ac on c.id = ac.command_id
+   ...> WHERE ac.action_id = 1;
+
