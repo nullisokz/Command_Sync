@@ -9,7 +9,7 @@ import './NavBar.css'
 
 export default function ButtonAppBar() {
   return (
-    <Box className="box" sx={{ flexGrow: 1 }}>
+    <Box className="box" sx={{ flexGrow: 1, position:"absolute"}}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
