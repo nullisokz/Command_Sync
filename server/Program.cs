@@ -13,6 +13,11 @@ var app = builder.Build();
 app.MapGet("/users", UserRoutes.GetAllUsers);
 app.MapGet("/users/{id}", UserRoutes.GetUserById);
 
+app.MapGet("/commands/{id}", CommandRoutes.GetCommandById);
+
+app.MapGet("/actions", ActionRoutes.GetAllActions);
+app.MapGet("/actions/{id}", CommandRoutes.GetCommandsByActionId);
+
 app.Run();
 
 public class SqliteConnectionFactory
