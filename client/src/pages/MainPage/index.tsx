@@ -2,12 +2,14 @@ import { useState } from "react";
 import "./MainPage.css";
 import logo from "../../assets/logo.png";
 import {
+  Button,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
   Container,
 } from "@mui/material";
+import CommandService from "../../services/commandService";
 import type { SelectChangeEvent } from "@mui/material";
 
 type Command = { description: string; code: string };
@@ -127,6 +129,7 @@ function MainPage() {
     setSelectedAction(cmd);
   };
 
+
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
       <div className="head-box">
@@ -190,6 +193,8 @@ function MainPage() {
           ))}
         </div>
       )}
+      <Button onClick={() => CommandService.GetCommandById(1)}>CLICK ME</Button>
+      <Button onClick= {() => CommandService.GetActionById(1)}>CLICK ME 2</Button>
     </Container>
   );
 }

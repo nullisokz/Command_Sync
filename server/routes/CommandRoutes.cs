@@ -76,4 +76,33 @@ public class CommandRoutes
             return TypedResults.BadRequest($"Error fetching action commands: {ex.Message}");
         }
     }
+    //INTERNAL HELPER FUNCTION:
+    internal static async Task<List<Command>> FetchCommandsByActionId(int id, SqliteConnectionFactory db)
+    {
+        var actionCommandsList = new List<Command>();
+
+        using var conn = db.CreateConnection();
+        await conn.OpenAsync();
+        using var cmd = conn.CreateCommand();
+        cmd.CommandText = """
+            SELECT c.id, c.description, c.code
+            FROM commands c
+            JOIN actions_x_commands ac on c.id = ac.command_id
+            WHERE ac.action_id = @id;
+            """;
+        cmd.Parameters.AddWithValue("@id", id);
+
+        await using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            actionCommandsList.Add(new Command
+            {
+                Id = reader.GetInt32(0),
+                Description = reader.GetString(1),
+                Code = reader.GetString(2)
+            });
+        }
+
+        return actionCommandsList;
+    }
 }

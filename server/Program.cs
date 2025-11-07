@@ -16,7 +16,9 @@ app.MapGet("/users/{id}", UserRoutes.GetUserById);
 app.MapGet("/commands/{id}", CommandRoutes.GetCommandById);
 
 app.MapGet("/actions", ActionRoutes.GetAllActions);
-app.MapGet("/actions/{id}", CommandRoutes.GetCommandsByActionId);
+app.MapGet("/actions/{id}", ActionRoutes.GetActionById);
+
+
 
 app.Run();
 
