@@ -2,23 +2,17 @@
 
 public class Command
 {
-    private int _id;
-    private string _name;
-    private string _description;
-    private string _shell_command;
-    private string _created_at;
+    public int Id { get; set; } = 0;
+    public string Description { get; set; } = "";
+    public string Code { get; set; } = "";
 
-    private Command(int id, string name, string description, string shell_command, string created_at)
+    public Command() { }
+
+    public Command(int id, string description, string code)
     {
-        _id = id;
-        _name = name;
-        _description = description;
-        _shell_command = shell_command;
-        _created_at = created_at;
+        Id = id;
+        Description = description;
+        Code = code;
     }
-    public int GetId() => _id;
-    public string GetName() => _name;
-    public string GetDescription() => _description;
-    public string GetShellCommand() => _shell_command;
-    public string GetCreatedAt() => _created_at;
+   
 }
