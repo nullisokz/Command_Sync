@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./MainPage.css";
-import logo from "./../assets/logo.png";
+import logo from "../../assets/logo.png";
 import {
   Select,
   MenuItem,
@@ -156,10 +156,10 @@ function MainPage() {
       {selectedCategory && (
         <div style={{ maxWidth: 420, width: "100%", margin: "0 auto 2rem" }}>
           <FormControl fullWidth className="custom-select">
-            <InputLabel id="command-label">Choose Command</InputLabel>
+            <InputLabel id="action-label">Choose Action</InputLabel>
             <Select
-              labelId="command-label"
-              label="Choose Command"
+              labelId="action-label"
+              label="Choose Action"
               value={commandValue}
               onChange={handleCommandChange}
             >
