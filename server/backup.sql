@@ -1,3 +1,9 @@
+-- I TERMINALEN:
+-- psql -U postgres -d postgres -f backup.sql
+-- createdb -U postgres mydb_from_backup
+-- psql -U postgres -d mydb_from_backup -f backup.sql
+
+
 --
 -- PostgreSQL database dump
 --
