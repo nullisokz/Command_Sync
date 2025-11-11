@@ -1,13 +1,14 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Common;
-using Microsoft.Data.Sqlite;
 using server;
-using SQLitePCL;
+using Npgsql;
+
+var dataSourceBuilder = new NpgsqlDataSourceBuilder("Host=localhost;Database=postgres;Username=postgres;Password=password123;Port=5432");
+
+var db = dataSourceBuilder.Build();
 
 var builder = WebApplication.CreateBuilder(args);
 
-var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "cmd_database.db");
-builder.Services.AddSingleton(new SqliteConnectionFactory($"Data Source={dbPath}"));
+builder.Services.AddSingleton<NpgsqlDataSource>(db);
+
 var app = builder.Build();
 
 app.MapGet("/users", UserRoutes.GetAllUsers);
@@ -22,11 +23,3 @@ app.MapGet("/actions/{id}", ActionRoutes.GetActionById);
 
 app.Run();
 
-public class SqliteConnectionFactory
-{
-    private readonly string _connectionString;
-    public SqliteConnectionFactory(string connectionString)
-    => _connectionString = connectionString;
-
-    public SqliteConnection CreateConnection() => new(_connectionString);
-}

@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Npgsql;
 namespace server;
 
 public class UserRoutes
 {
-    public static async Task<Results<Ok<List<User>>, BadRequest<string>>> GetAllUsers(SqliteConnectionFactory db)
+    public static async Task<Results<Ok<List<User>>, BadRequest<string>>> GetAllUsers(NpgsqlDataSource db)
     {
 
         Console.WriteLine(db);
@@ -36,7 +37,7 @@ public class UserRoutes
         }
     }
 
-    public static async Task<Results<Ok<User>, BadRequest<string>>> GetUserById(int id, SqliteConnectionFactory db)
+    public static async Task<Results<Ok<User>, BadRequest<string>>> GetUserById(int id, NpgsqlDataSource db)
     {
         try
         {

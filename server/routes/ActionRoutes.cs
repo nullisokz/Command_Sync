@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Npgsql;
 namespace server;
 
 public class ActionRoutes
 {
-    public static async Task<Results<Ok<List<Action>>, BadRequest<string>>> GetAllActions(SqliteConnectionFactory db)
+    public record ActionCommandsDTO(int id, string title, List<Command> commandlist);
+    public static async Task<Results<Ok<List<ActionCommandsDTO>>, BadRequest<string>>> GetAllActions(NpgsqlDataSource db)
     {
-        List<Action> actionlist = new List<Action>();
+        List<ActionCommandsDTO> actionlist = new List<ActionCommandsDTO>();
 
         try
         {
@@ -18,11 +20,7 @@ public class ActionRoutes
 
             while (await reader.ReadAsync())
             {
-                actionlist.Add(new Action
-                {
-                    Id = reader.GetInt32(0),
-                    Title = reader.GetString(1)
-                });
+                actionlist.Add(new ActionCommandsDTO(reader.GetInt32(0),reader.GetString(1), await CommandRoutes.FetchCommandsByActionId(reader.GetInt32(0),db)));
             }
             return TypedResults.Ok(actionlist);
         }
@@ -32,9 +30,9 @@ public class ActionRoutes
         }
     }
 
-    public record ActionCommandsDTO(int id, string title, List<Command> commandlist);
+   
 
-    public static async Task<Results<Ok<ActionCommandsDTO>, BadRequest<string>>> GetActionById(int id, SqliteConnectionFactory db)
+    public static async Task<Results<Ok<ActionCommandsDTO>, BadRequest<string>>> GetActionById(int id, NpgsqlDataSource db)
     {
 
         try

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Npgsql;
 
 namespace server;
 
 public class CommandRoutes
 {
-    public static async Task<Results<Ok<Command>, BadRequest<string>>> GetCommandById(int id, SqliteConnectionFactory db)
+    public static async Task<Results<Ok<Command>, BadRequest<string>>> GetCommandById(int id, NpgsqlDataSource db)
     {
 
         try
@@ -41,7 +42,7 @@ public class CommandRoutes
 
     }
 
-    public static async Task<Results<Ok<List<Command>>, BadRequest<string>>> GetCommandsByActionId(int id, SqliteConnectionFactory db)
+    public static async Task<Results<Ok<List<Command>>, BadRequest<string>>> GetCommandsByActionId(int id, NpgsqlDataSource db)
     {
         List<Command> actioncommansList = new List<Command>();
 
@@ -77,7 +78,7 @@ public class CommandRoutes
         }
     }
     //INTERNAL HELPER FUNCTION:
-    internal static async Task<List<Command>> FetchCommandsByActionId(int id, SqliteConnectionFactory db)
+    internal static async Task<List<Command>> FetchCommandsByActionId(int id, NpgsqlDataSource db)
     {
         var actionCommandsList = new List<Command>();
 
