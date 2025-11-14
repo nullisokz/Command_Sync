@@ -1,19 +1,19 @@
 ﻿namespace server;
 
 
-public class Action
+public class Category
 {
     public int Id { get; set; } = 0;
     public string Title { get; set; } = "";
     
-    public int Category { get; set; } = 0;
-    public Action() { }
 
-    public Action(int id, string title, int category)
+    public Category() { }
+
+    public Category(int id, string title)
     {
         Id = id;
         Title = title;
-
     }
    
 }
+

@@ -1,7 +1,7 @@
 using server;
 using Npgsql;
 
-var dataSourceBuilder = new NpgsqlDataSourceBuilder("Host=localhost;Database=postgres;Username=postgres;Password=password123;Port=5432");
+var dataSourceBuilder = new NpgsqlDataSourceBuilder("Host=localhost;Database=commandsyncdb;Username=postgres;Password=password123;Port=5430");
 
 var db = dataSourceBuilder.Build();
 
@@ -18,6 +18,9 @@ app.MapGet("/commands/{id}", CommandRoutes.GetCommandById);
 
 app.MapGet("/actions", ActionRoutes.GetAllActions);
 app.MapGet("/actions/{id}", ActionRoutes.GetActionById);
+
+
+app.MapGet("/categories", CategoryRoutes.GetCategories);
 
 
 
