@@ -6,24 +6,18 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SideMenu from '../SideMenu/index.tsx'
 import './NavBar.css'
+import logo from "../../assets/logo.png";
 
 export default function ButtonAppBar() {
   return (
-    <Box className="box" sx={{ flexGrow: 1, position:"absolute"}}>
+    <Box className="box" sx={{ position:"absolute"}}>
       <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
+        <Toolbar sx={{display:"flex", justifyContent:"space-between"}}>
             <SideMenu/>
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            News
-          </Typography>
+          <div style={{display: "flex", flexDirection:"row", justifyContent:"center", alignItems:"center"}}>
+          <img className="logo" src={logo} />
+          <h2>Command Sync</h2>
+          </div>
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>

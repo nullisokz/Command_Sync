@@ -1,200 +1,162 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./MainPage.css";
-import logo from "../../assets/logo.png";
 import {
-  Button,
+  Box,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
   Container,
+  Typography,
 } from "@mui/material";
 import CommandService from "../../services/commandService";
 import type { SelectChangeEvent } from "@mui/material";
+import logo from "../../assets/logo.png";
 
-type Command = { description: string; code: string };
-type Action = { title: string; commands: Command[] };
-type Category = { name: string; actions: Action[] };
-
-const categories: Category[] = [
-  {
-    name: "GitHub",
-    actions: [
-      {
-        title: "Skapa Git repo",
-        commands: [
-          { description: "Initiera repo i aktuell mapp", code: "git init" },
-          {
-            description: "Skapa .gitignore via dotnet",
-            code: "dotnet new gitignore",
-          },
-          { description: "Lägg till alla filer", code: "git add ." },
-          {
-            description: "Första commit",
-            code: `git commit -m "Initial commit"`,
-          },
-          {
-            description: "Koppla remote (byt USER/REPO)",
-            code: "git remote add origin git@github.com:USER/REPO.git",
-          },
-          {
-            description: "Push till main",
-            code: "git branch -M main && git push -u origin main",
-          },
-        ],
-      },
-      {
-        title: "Rebase branch",
-        commands: [
-          { description: "Hämta senaste", code: "git fetch origin" },
-          { description: "Rebase mot main", code: "git rebase origin/main" },
-        ],
-      },
-      {
-        title: "Push med force (försiktigt)",
-        commands: [
-          {
-            description: "Force-pusha ändrad historik",
-            code: "git push --force",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "React",
-    actions: [
-      {
-        title: "Skapa nytt projekt (Vite + TS)",
-        commands: [
-          {
-            description: "Skapa app",
-            code: "npm create vite@latest my-app -- --template react-ts",
-          },
-        ],
-      },
-      {
-        title: "Starta utvecklingsserver",
-        commands: [{ description: "Starta Vite dev", code: "npm run dev" }],
-      },
-    ],
-  },
-  {
-    name: "Docker",
-    actions: [
-      {
-        title: "Bygg image",
-        commands: [
-          {
-            description: "Bygg från Dockerfile",
-            code: "docker build -t my-app .",
-          },
-        ],
-      },
-      {
-        title: "Starta container",
-        commands: [
-          {
-            description: "Kör container",
-            code: "docker run -p 8080:80 my-app",
-          },
-        ],
-      },
-    ],
-  },
-];
+type Command = { id: number; description: string; code: string };
+type Action = { id: number; title: string; commands: Command[] };
+type Category = { id: number; title: string; actions: Action[] };
 
 function MainPage() {
-  const [categoryValue, setCategoryValue] = useState<string>("");
-  const [commandValue, setCommandValue] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null
   );
-  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
+  const [selectedActionId, setSelectedActionId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const result = await CommandService.GetCategories();
+        setCategories(result);
+      } catch (err) {
+        console.error("Failed to load categories", err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const selectedCategory =
+    categories.find((c) => c.id === selectedCategoryId) ?? null;
+
+  const selectedAction =
+    selectedCategory?.actions.find((a) => a.id === selectedActionId) ?? null;
 
   const handleCategoryChange = (e: SelectChangeEvent<string>) => {
-    const name = e.target.value;
-    setCategoryValue(name);
-    const cat = categories.find((c) => c.name === name) ?? null;
-    setSelectedCategory(cat);
-    setSelectedAction(null);
-    setCommandValue("");
+    const id = Number(e.target.value);
+    setSelectedCategoryId(id);
+    setSelectedActionId(null);
   };
 
-  const handleCommandChange = (e: SelectChangeEvent<string>) => {
-    const title = e.target.value;
-    setCommandValue(title);
-    const cmd =
-      selectedCategory?.actions.find((c) => c.title === title) ?? null;
-    setSelectedAction(cmd);
+  const handleActionChange = (e: SelectChangeEvent<string>) => {
+    const id = Number(e.target.value);
+    setSelectedActionId(id);
   };
-
 
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
+      {/* Header - samma känsla som AddActionPage */}
       <div className="head-box">
-        <img className="logo" src={logo} />
-        <h1>Command Sync</h1>
+        <h1>Find Action</h1>
       </div>
 
-      {/* Välj kategori */}
-      <div style={{ maxWidth: 420, width: "100%", margin: "0 auto 2rem" }}>
-        <FormControl fullWidth className="custom-select">
-          <InputLabel id="category-label">Choose Category</InputLabel>
-          <Select
-            labelId="category-label"
-            label="Choose Category"
-            value={categoryValue}
-            onChange={handleCategoryChange}
-          >
-            {categories.map((cat) => (
-              <MenuItem key={cat.name} value={cat.name}>
-                {cat.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </div>
-
-      {selectedCategory && (
-        <div style={{ maxWidth: 420, width: "100%", margin: "0 auto 2rem" }}>
+      {/* Svarta kortet */}
+      <Box
+        className="form-card"
+        sx={{
+          maxWidth: 720,
+          width: "100%",
+          margin: "0 auto",
+          padding: "2rem",
+          borderRadius: "16px",
+          backgroundColor: "rgba(15,15,20,0.96)",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5rem",
+        }}
+      >
+        {/* Choose Category */}
+        <div
+          style={{
+            maxWidth: 420,
+            width: "100%",
+            margin: "0 auto 1.5rem",
+          }}
+        >
           <FormControl fullWidth className="custom-select">
-            <InputLabel id="action-label">Choose Action</InputLabel>
+            <InputLabel id="category-label">Choose Category</InputLabel>
             <Select
-              labelId="action-label"
-              label="Choose Action"
-              value={commandValue}
-              onChange={handleCommandChange}
+              labelId="category-label"
+              label="Choose Category"
+              value={
+                selectedCategoryId !== null ? String(selectedCategoryId) : ""
+              }
+              onChange={handleCategoryChange}
             >
-              {selectedCategory.actions.map((cmd) => (
-                <MenuItem key={cmd.title} value={cmd.title}>
-                  {cmd.title}
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={String(cat.id)}>
+                  {cat.title}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </div>
-      )}
 
-      {selectedAction && (
-        <div
-          className="command-detail"
-          style={{ maxWidth: 720, margin: "0 auto" }}
-        >
-          <h3 style={{ marginBottom: ".75rem" }}>{selectedAction.title}</h3>
+        {/* Choose Action */}
+        {selectedCategory && (
+          <div
+            style={{
+              maxWidth: 420,
+              width: "100%",
+              margin: "0 auto 1.5rem",
+            }}
+          >
+            <FormControl fullWidth className="custom-select">
+              <InputLabel id="action-label">Choose Action</InputLabel>
+              <Select
+                labelId="action-label"
+                label="Choose Action"
+                value={
+                  selectedActionId !== null ? String(selectedActionId) : ""
+                }
+                onChange={handleActionChange}
+              >
+                {selectedCategory.actions.map((action) => (
+                  <MenuItem key={action.id} value={String(action.id)}>
+                    {action.title}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+        )}
 
-          {selectedAction.commands.map((step, i) => (
-            <div key={i} style={{ marginBottom: "1rem" }}>
-              <div style={{ opacity: 0.9, marginBottom: ".25rem" }}>
-                <strong>Steg {i + 1}:</strong> {step.description}
+        {/* Show Commands */}
+        {selectedAction && (
+          <div
+            className="command-detail"
+            style={{ maxWidth: 720, margin: "0 auto" }}
+          >
+            <Typography
+              variant="h6"
+              sx={{ marginBottom: ".75rem", fontWeight: 600 }}
+            >
+              {selectedAction.title}
+            </Typography>
+
+            {selectedAction.commands.map((step, i) => (
+              <div key={step.id ?? i} style={{ marginBottom: "1rem" }}>
+                <div style={{ opacity: 0.9, marginBottom: ".25rem" }}>
+                  <strong>Step {i + 1}:</strong> {step.description}
+                </div>
+                <pre className="code-block">{step.code}</pre>
               </div>
-              <pre className="code-block">{step.code}</pre>
-            </div>
-          ))}
-        </div>
-      )}
-      <Button onClick={() => CommandService.GetCommandById(1)}>CLICK ME</Button>
-      <Button onClick= {() => CommandService.GetActionById(1)}>CLICK ME 2</Button>
+            ))}
+          </div>
+        )}
+      </Box>
     </Container>
   );
 }

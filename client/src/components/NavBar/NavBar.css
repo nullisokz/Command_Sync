@@ -1,4 +1,24 @@
 .box{
-    width: 50%;
+    width: 70%;
+    height: 3vh;
     background-color: transparent;
+}
+
+.logo {
+  height: 3vh;      /* matchar MUI Toolbar */
+  width: auto;
+  object-fit: contain;
+  margin-right: 8px; /* lite luft till texten */
+  vertical-align: middle;
+}
+h2 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+/* Dölj h2 när skärmen är smalare än 1000px */
+@media (max-width: 1000px) {
+  h2 {
+    display: none;
+  }
 }
