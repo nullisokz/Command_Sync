@@ -4,6 +4,33 @@ namespace server;
 
 public class UserRoutes
 {
+
+    // public static async Task<Result<Ok<int>>, BadRequest<string>> CreateUser(string name, string password, NpgsqlDataSource db)
+    // {
+    //     try
+    //     {
+    //         using var conn = db.CreateConnection();
+    //         await conn.OpenAsync();
+    //         await using var cmd = conn.CreateCommand();
+    //         cmd.CommandText=
+    //                             """
+    //                             INSERT INTO USERS (name, password)
+    //                             VALUES
+    //                             (@name, @password)
+    //                             RETURNING id
+    //                             """;
+    //         cmd.Parameters.AddWithValue("@name", name);
+    //         cmd.Parameters.AddWithValue("@password", password);
+
+    //         var result = await cmd.ExecuteScalarAsync();
+
+    //         if (result != null)
+    //         {
+    //             return TypedResults.Ok(result);
+    //         }
+    //     }
+    // }
+    
     public static async Task<Results<Ok<List<User>>, BadRequest<string>>> GetAllUsers(NpgsqlDataSource db)
     {
 
@@ -23,7 +50,8 @@ public class UserRoutes
                 Userlist.Add(new User
                 {
                     Id = reader.GetInt32(0),
-                    Name = reader.GetString(1)
+                    Name = reader.GetString(1),
+                    
                 });
             }
 
@@ -56,7 +84,8 @@ public class UserRoutes
                 user = new User
                 {
                     Id = reader.GetInt32(0),
-                    Name = reader.GetString(1)
+                    Name = reader.GetString(1),
+                    
                 };
             }
             return TypedResults.Ok(user);

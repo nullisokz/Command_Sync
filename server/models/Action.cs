@@ -13,6 +13,7 @@ public class Action
     {
         Id = id;
         Title = title;
+        Category = category;
 
     }
    
