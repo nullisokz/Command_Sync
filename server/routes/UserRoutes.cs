@@ -5,7 +5,7 @@ namespace server;
 public class UserRoutes
 {
 
-    // public static async Task<Result<Ok<int>>, BadRequest<string>> CreateUser(string name, string password, NpgsqlDataSource db)
+    // public static async Task<Result<Ok<int>, BadRequest<string>>> CreateUser(string name, string password, NpgsqlDataSource db)
     // {
     //     try
     //     {
@@ -28,7 +28,15 @@ public class UserRoutes
     //         {
     //             return TypedResults.Ok(result);
     //         }
+    //         else
+    //         {
+    //             return TypedResults.BadRequest();
+    //         }
+    //     }catch(Exception ex)
+    //     {
+    //         return TypedResults.BadRequest($"Error creating user: {ex.Message}");
     //     }
+
     // }
     
     public static async Task<Results<Ok<List<User>>, BadRequest<string>>> GetAllUsers(NpgsqlDataSource db)

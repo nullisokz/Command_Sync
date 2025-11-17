@@ -1,7 +1,8 @@
 -- Skapa tabell för användare
 CREATE TABLE users (
     id   SERIAL PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    password TEXT NOT NULL
 );
 
 CREATE TABLE categories (
@@ -37,7 +38,7 @@ CREATE TABLE actions_x_commands (
 );
 
 -- (Valfritt) Lägg in lite testdata
-INSERT INTO users (name) VALUES ('Viktor'), ('Oskar');
+INSERT INTO users (name, password) VALUES ('Viktor', 'DT123'), ('Oskar', 'EJ123');
 
 INSERT INTO categories (title)
 VALUES
@@ -46,9 +47,9 @@ VALUES
 ('dotnet'),
 ('react');
 
-INSERT INTO actions (title) VALUES
-  ('add changes and push to git branch'),
-  ('create new branch');
+INSERT INTO actions (title, category) VALUES
+  ('add changes and push to git branch', 1),
+  ('create new branch', 1);
 
 INSERT INTO commands (description, code) VALUES
   ('add files to git commit', 'git add'),
