@@ -11,16 +11,17 @@ builder.Services.AddSingleton<NpgsqlDataSource>(db);
 
 var app = builder.Build();
 
-app.MapGet("/users", UserRoutes.GetAllUsers);
-app.MapGet("/users/{id}", UserRoutes.GetUserById);
+app.MapGet("/api/users", UserRoutes.GetAllUsers);
+app.MapGet("/api/users/{id}", UserRoutes.GetUserById);
+app.MapPost("/api/users",UserRoutes.CreateUser);
 
-app.MapGet("/commands/{id}", CommandRoutes.GetCommandById);
+app.MapGet("/api/commands/{id}", CommandRoutes.GetCommandById);
 
-app.MapGet("/actions", ActionRoutes.GetAllActions);
-app.MapGet("/actions/{id}", ActionRoutes.GetActionById);
+app.MapGet("/api/actions", ActionRoutes.GetAllActions);
+app.MapGet("/api/actions/{id}", ActionRoutes.GetActionById);
+app.MapGet("/api/category/actions/{id}", ActionRoutes.GetAllActionsByCategory);
 
-
-app.MapGet("/categories", CategoryRoutes.GetCategories);
+app.MapGet("/api/categories", CategoryRoutes.GetCategories);
 
 
 

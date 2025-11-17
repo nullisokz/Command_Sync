@@ -15,7 +15,7 @@ export interface Action {
 export interface Category {
   id: number;
   title: string;
-  actions: Action[];
+  
 }
 
 /**
