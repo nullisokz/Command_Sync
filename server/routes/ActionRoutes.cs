@@ -4,7 +4,7 @@ namespace server;
 
 public class ActionRoutes
 {
-    public record ActionCommandsDTO(int id, string title, List<Command> commandlist, string category);
+    public record ActionCommandsDTO(int id, string title, List<Command> commandlist, Category category);
     public static async Task<Results<Ok<List<ActionCommandsDTO>>, BadRequest<string>>> GetAllActions(NpgsqlDataSource db)
     {
         List<ActionCommandsDTO> actionlist = new List<ActionCommandsDTO>();
@@ -15,7 +15,7 @@ public class ActionRoutes
             await conn.OpenAsync();
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                                SELECT a.id, a.title, c.title 
+                                SELECT a.id, a.title, c.id, c.title 
                                 FROM actions a
                                 JOIN categories c 
                                 ON c.id = a.category
@@ -25,7 +25,7 @@ public class ActionRoutes
 
             while (await reader.ReadAsync())
             {
-                actionlist.Add(new ActionCommandsDTO(reader.GetInt32(0),reader.GetString(1), await CommandRoutes.FetchCommandsByActionId(reader.GetInt32(0),db), reader.GetString(2)));
+                actionlist.Add(new ActionCommandsDTO(reader.GetInt32(0),reader.GetString(1), await CommandRoutes.FetchCommandsByActionId(reader.GetInt32(0),db), new Category(reader.GetInt32(2), reader.GetString(3))));
             }
             return TypedResults.Ok(actionlist);
         }
@@ -79,7 +79,7 @@ public class ActionRoutes
             await conn.OpenAsync();
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = """
-                                SELECT a.id, a.title, c.title 
+                                SELECT a.id, a.title, c.id, c.title 
                                 FROM actions a
                                 JOIN categories c 
                                 ON c.id = a.category
@@ -91,7 +91,7 @@ public class ActionRoutes
 
             while (await reader.ReadAsync())
             {
-                actionlist.Add(new ActionCommandsDTO(reader.GetInt32(0),reader.GetString(1), await CommandRoutes.FetchCommandsByActionId(reader.GetInt32(0),db), reader.GetString(2)));
+                actionlist.Add(new ActionCommandsDTO(reader.GetInt32(0),reader.GetString(1), await CommandRoutes.FetchCommandsByActionId(reader.GetInt32(0),db), new Category(reader.GetInt32(2), reader.GetString(3))));
             }
             return TypedResults.Ok(actionlist);
         }
