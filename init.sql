@@ -4,10 +4,18 @@ CREATE TABLE users (
     name TEXT NOT NULL
 );
 
+CREATE TABLE categories (
+	id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
+	title varchar NOT NULL,
+	CONSTRAINT categories_pk PRIMARY KEY (id)
+);
+
 -- Skapa tabell för actions
 CREATE TABLE actions (
     id    SERIAL PRIMARY KEY,
-    title TEXT NOT NULL
+    title TEXT NOT NULL,
+    category INTEGER,
+    FOREIGN KEY (category) REFERENCES categories(id)
 );
 
 -- Skapa tabell för commands
@@ -30,6 +38,13 @@ CREATE TABLE actions_x_commands (
 
 -- (Valfritt) Lägg in lite testdata
 INSERT INTO users (name) VALUES ('Viktor'), ('Oskar');
+
+INSERT INTO categories (title)
+VALUES
+('git'),
+('docker'),
+('dotnet'),
+('react');
 
 INSERT INTO actions (title) VALUES
   ('add changes and push to git branch'),
