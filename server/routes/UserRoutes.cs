@@ -1,43 +1,53 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Npgsql;
 namespace server;
 
 public class UserRoutes
 {
 
-    // public static async Task<Result<Ok<int>, BadRequest<string>>> CreateUser(string name, string password, NpgsqlDataSource db)
-    // {
-    //     try
-    //     {
-    //         using var conn = db.CreateConnection();
-    //         await conn.OpenAsync();
-    //         await using var cmd = conn.CreateCommand();
-    //         cmd.CommandText=
-    //                             """
-    //                             INSERT INTO USERS (name, password)
-    //                             VALUES
-    //                             (@name, @password)
-    //                             RETURNING id
-    //                             """;
-    //         cmd.Parameters.AddWithValue("@name", name);
-    //         cmd.Parameters.AddWithValue("@password", password);
+    public record CreateUserDTO(string name, string password);
+    public static async Task<Results<Ok<int>, BadRequest<string>>> CreateUser(CreateUserDTO user, NpgsqlDataSource db)
+    {
+        try
+        {
 
-    //         var result = await cmd.ExecuteScalarAsync();
+            var hasher = new PasswordHasher<object>();
+            string hashedPassword = hasher.HashPassword(null, user.password);
 
-    //         if (result != null)
-    //         {
-    //             return TypedResults.Ok(result);
-    //         }
-    //         else
-    //         {
-    //             return TypedResults.BadRequest();
-    //         }
-    //     }catch(Exception ex)
-    //     {
-    //         return TypedResults.BadRequest($"Error creating user: {ex.Message}");
-    //     }
+            using var conn = db.CreateConnection();
+            await conn.OpenAsync();
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText=
+                                """
+                                INSERT INTO USERS (name, password)
+                                VALUES
+                                (@name, @password_hash)
+                                RETURNING id
+                                """;
+            cmd.Parameters.AddWithValue("@name", user.name);
+            cmd.Parameters.AddWithValue("@password_hash", hashedPassword);
 
-    // }
+            var result = await cmd.ExecuteScalarAsync();
+
+            try
+            {
+                int id = Convert.ToInt32(result);
+                return TypedResults.Ok(id);
+            }catch{
+
+                return TypedResults.BadRequest("Failed to create user");
+            }
+
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest($"Error creating user: {ex.Message}");
+        }
+
+    }
+
+
     
     public static async Task<Results<Ok<List<User>>, BadRequest<string>>> GetAllUsers(NpgsqlDataSource db)
     {

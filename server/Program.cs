@@ -13,6 +13,7 @@ var app = builder.Build();
 
 app.MapGet("/api/users", UserRoutes.GetAllUsers);
 app.MapGet("/api/users/{id}", UserRoutes.GetUserById);
+app.MapPost("/api/users",UserRoutes.CreateUser);
 
 app.MapGet("/api/commands/{id}", CommandRoutes.GetCommandById);
 
