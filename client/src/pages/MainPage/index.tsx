@@ -14,21 +14,36 @@ import type { SelectChangeEvent } from "@mui/material";
 import logo from "../../assets/logo.png";
 
 type Command = { id: number; description: string; code: string };
-type Action = { id: number; title: string; commands: Command[] };
-type Category = { id: number; title: string; actions: Action[] };
+type Action = {
+  id: number;
+  category: Category;
+  title: string;
+  commands: Command[];
+};
+type Category = { id: number; title: string };
 
 function MainPage() {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null
-  );
-  const [selectedActionId, setSelectedActionId] = useState<number | null>(null);
+  const [actions, setActions] = useState<Action[]>([]);
+  const [selectedAction, setSelectedAction] = useState<Action>();
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [selectedActionId, setSelectedActionId] = useState<string>("");
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const result = await CommandService.GetCategories();
-        setCategories(result);
+        const uniqueByTitle = (cats: Category[]): Category[] => {
+          const seen = new Set<string>();
+          return cats.filter((c) => {
+            if (seen.has(c.title)) return false;
+            seen.add(c.title);
+            return true;
+          });
+        };
+
+        const uniqueCategories = uniqueByTitle(result);
+        setCategories(uniqueCategories);
       } catch (err) {
         console.error("Failed to load categories", err);
       }
@@ -37,31 +52,32 @@ function MainPage() {
     fetchCategories();
   }, []);
 
-  const selectedCategory =
-    categories.find((c) => c.id === selectedCategoryId) ?? null;
+  const handleCategoryChange = async (e: SelectChangeEvent<string>) => {
+    const value = e.target.value;
+    setSelectedCategoryId(value);
 
-  const selectedAction =
-    selectedCategory?.actions.find((a) => a.id === selectedActionId) ?? null;
+    const id = Number(value);
+    const result = await CommandService.GetActionsByCategory(id);
 
-  const handleCategoryChange = (e: SelectChangeEvent<string>) => {
-    const id = Number(e.target.value);
-    setSelectedCategoryId(id);
-    setSelectedActionId(null);
+    setActions(result);
+    setSelectedAction(undefined);
+    setSelectedActionId("");
   };
 
   const handleActionChange = (e: SelectChangeEvent<string>) => {
-    const id = Number(e.target.value);
-    setSelectedActionId(id);
+    const value = e.target.value;
+    setSelectedActionId(value);
+
+    const id = Number(value);
+    const found = actions.find((a) => a.id === id);
+    setSelectedAction(found);
   };
 
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
-      {/* Header - samma känsla som AddActionPage */}
       <div className="head-box">
         <h1>Find Action</h1>
       </div>
-
-      {/* Svarta kortet */}
       <Box
         className="form-card"
         sx={{
@@ -77,7 +93,6 @@ function MainPage() {
           gap: "1.5rem",
         }}
       >
-        {/* Choose Category */}
         <div
           style={{
             maxWidth: 420,
@@ -90,9 +105,7 @@ function MainPage() {
             <Select
               labelId="category-label"
               label="Choose Category"
-              value={
-                selectedCategoryId !== null ? String(selectedCategoryId) : ""
-              }
+              value={selectedCategoryId}
               onChange={handleCategoryChange}
             >
               {categories.map((cat) => (
@@ -104,8 +117,7 @@ function MainPage() {
           </FormControl>
         </div>
 
-        {/* Choose Action */}
-        {selectedCategory && (
+        {actions.length > 0 && (
           <div
             style={{
               maxWidth: 420,
@@ -118,12 +130,10 @@ function MainPage() {
               <Select
                 labelId="action-label"
                 label="Choose Action"
-                value={
-                  selectedActionId !== null ? String(selectedActionId) : ""
-                }
+                value={selectedActionId}
                 onChange={handleActionChange}
               >
-                {selectedCategory.actions.map((action) => (
+                {actions.map((action) => (
                   <MenuItem key={action.id} value={String(action.id)}>
                     {action.title}
                   </MenuItem>
@@ -133,7 +143,6 @@ function MainPage() {
           </div>
         )}
 
-        {/* Show Commands */}
         {selectedAction && (
           <div
             className="command-detail"

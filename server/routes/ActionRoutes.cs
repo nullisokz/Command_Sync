@@ -4,7 +4,7 @@ namespace server;
 
 public class ActionRoutes
 {
-    public record ActionCommandsDTO(int id, string title, List<Command> commandlist, Category category);
+    public record ActionCommandsDTO(int id, string title, List<Command> commands, Category category);
     public static async Task<Results<Ok<List<ActionCommandsDTO>>, BadRequest<string>>> GetAllActions(NpgsqlDataSource db)
     {
         List<ActionCommandsDTO> actionlist = new List<ActionCommandsDTO>();

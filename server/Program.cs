@@ -19,7 +19,8 @@ app.MapGet("/api/commands/{id}", CommandRoutes.GetCommandById);
 
 app.MapGet("/api/actions", ActionRoutes.GetAllActions);
 app.MapGet("/api/actions/{id}", ActionRoutes.GetActionById);
-app.MapGet("/api/category/actions/{id}", ActionRoutes.GetAllActionsByCategory);
+app.MapGet("/api/categories/actions/{id}", ActionRoutes.GetAllActionsByCategory);
+app.MapGet("/api/categories/actions/commands/{id}", CommandRoutes.GetCommandsByCategoryId);
 
 app.MapGet("/api/categories", CategoryRoutes.GetCategories);
 

@@ -10,12 +10,12 @@ export interface Action {
   id: number;
   title: string;
   commands: Command[];
+  category: Category;
 }
 
 export interface Category {
   id: number;
   title: string;
-  
 }
 
 /**
@@ -120,6 +120,25 @@ class CommandService {
     return data;
   }
 
+  static async GetActionsByCategory(id: number | undefined): Promise<Action[]> {
+    const response = await fetch(`/api/categories/actions/${id}`, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch action with id ${id}: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data: Action[] = await response.json();
+    return data;
+  }
+
   static async CreateAction(payload: CreateActionPayload): Promise<Action> {
     const response = await fetch(`/api/actions`, {
       method: "POST",
@@ -160,6 +179,25 @@ class CommandService {
     }
 
     const data: Category[] = await response.json();
+    return data;
+  }
+
+    static async GetCommandsByCategoryId(id: number): Promise<Command[]> {
+    const response = await fetch(`/api/categories/actions/commands/${id}`, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch commands for category ${id}: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data: Command[] = await response.json();
     return data;
   }
 }

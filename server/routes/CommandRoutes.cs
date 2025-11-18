@@ -41,6 +41,47 @@ public class CommandRoutes
         }
 
     }
+    public static async Task<Results<Ok<List<Command>>, BadRequest<string>>> GetCommandsByCategoryId(
+    int id,
+    NpgsqlDataSource db)
+{
+    try
+    {
+        await using var conn = await db.OpenConnectionAsync();
+        await using var cmd = conn.CreateCommand();
+
+        cmd.CommandText = @"
+            SELECT DISTINCT c.id, c.description, c.code
+            FROM actions a
+            JOIN actions_x_commands ac ON ac.action_id = a.id
+            JOIN commands c ON c.id = ac.command_id
+            WHERE a.category = @categoryId
+            ORDER BY c.id;
+        ";
+
+        cmd.Parameters.AddWithValue("@categoryId", id);
+
+        var commands = new List<Command>();
+
+        await using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            commands.Add(new Command
+            {
+                Id = reader.GetInt32(0),
+                Description = reader.GetString(1),
+                Code = reader.GetString(2)
+            });
+        }
+
+        return TypedResults.Ok(commands);
+    }
+    catch (Exception ex)
+    {
+        return TypedResults.BadRequest($"Failed to load commands for category {id}: {ex.Message}");
+    }
+}
+
 
     public static async Task<Results<Ok<List<Command>>, BadRequest<string>>> GetCommandsByActionId(int id, NpgsqlDataSource db)
     {
