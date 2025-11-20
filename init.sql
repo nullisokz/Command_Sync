@@ -30,6 +30,7 @@ CREATE TABLE commands (
 CREATE TABLE actions_x_commands (
     command_id INTEGER NOT NULL,
     action_id  INTEGER NOT NULL,
+    steporder  INTEGER NOT NULL, -- <<-- NY KOLUMN FÖR ORDNINGEN
     PRIMARY KEY (command_id, action_id),
     CONSTRAINT fk_actions_x_commands_command
       FOREIGN KEY (command_id) REFERENCES commands(id) ON DELETE CASCADE,
@@ -56,8 +57,7 @@ INSERT INTO commands (description, code) VALUES
   ('commit changes for staging', 'git commit'),
   ('push changes to branch', 'git push');
 
--- Koppla första actionen till alla tre commands
-INSERT INTO actions_x_commands (command_id, action_id) VALUES
-  (1, 1),
-  (2, 1),
-  (3, 1);
+INSERT INTO actions_x_commands (command_id, action_id, steporder) VALUES
+  (1, 1, 1),
+  (2, 1, 2),
+  (3, 1, 3);

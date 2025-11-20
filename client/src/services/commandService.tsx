@@ -33,14 +33,11 @@ export interface Category {
  * - newCommand: (valfritt) nytt command att skapa samtidigt
  */
 export interface CreateActionPayload {
-  categoryId?: number;
-  categoryTitle?: string;
-  actionTitle: string;
-  commandIds: number[];
-  newCommand?: {
-    description: string;
-    code: string;
-  };
+  categoryId?: number; // C# int?
+  categoryTitle?: string; // C# string?
+  actionTitle: string; // C# string
+  commandIds?: number[]; // C# List<int>?
+  newCommands?: Command[]; // C# List<NewCommandDTO>?
 }
 
 class CommandService {
@@ -139,7 +136,7 @@ class CommandService {
     return data;
   }
 
-  static async CreateAction(payload: CreateActionPayload): Promise<Action> {
+  static async CreateAction(payload: CreateActionPayload): Promise<string> { // <--- Returtyp ändrad till string
     const response = await fetch(`/api/actions`, {
       method: "POST",
       cache: "no-store",
@@ -157,8 +154,9 @@ class CommandService {
       );
     }
 
-    const data: Action = await response.json();
-    return data;
+    // Ändra från response.json() till response.text()
+    const data: string = await response.text(); 
+    return data; // Returnerar framgångsmeddelandet från C# endpointen
   }
 
   // ===== Categories =====

@@ -54,12 +54,11 @@ app.MapGet("/api/commands/{id}", CommandRoutes.GetCommandById);
 
 app.MapGet("/api/actions", ActionRoutes.GetAllActions);
 app.MapGet("/api/actions/{id}", ActionRoutes.GetActionById);
+app.MapPost("/api/actions", ActionRoutes.AddAction); 
 app.MapGet("/api/categories/actions/{id}", ActionRoutes.GetAllActionsByCategory);
 app.MapGet("/api/categories/actions/commands/{id}", CommandRoutes.GetCommandsByCategoryId);
 
 app.MapGet("/api/categories", CategoryRoutes.GetCategories);
-
-
 
 app.Run();
 

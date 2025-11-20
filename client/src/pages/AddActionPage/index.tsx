@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { ArrowUpward, ArrowDownward, Delete } from "@mui/icons-material";
 import CommandService from "../../services/commandService";
+import type { CreateActionPayload } from "../../services/commandService";
 
 type Command = { id: number; description: string; code: string };
 type Category = { id: number; title: string };
@@ -216,9 +217,8 @@ function AddActionPage() {
   };
 
   const handleSave = async () => {
+    // --- Validering & Stegfiltrering (Låt det vara) ---
     const newErrors: Record<string, string> = {};
-
-    const hasAnySteps = steps.length > 0;
 
     const newSteps = steps.filter(
       (s): s is NewStep => s.kind === "new"
@@ -227,16 +227,16 @@ function AddActionPage() {
       (s): s is ExistingStep => s.kind === "existing"
     );
 
+    const hasAnySteps = steps.length > 0;
+
     if (!hasAnySteps) {
       newErrors.commands = "Lägg till minst ett command i listan.";
     }
 
-    if (
-      newSteps.some((s) => commandDescriptionExists(s.description))
-    ) {
-      newErrors.commands =
-        "Minst ett av de nya commandsen har en beskrivning som redan finns.";
-    }
+    // Antaget att du har denna funktion
+    // if (newSteps.some((s) => commandDescriptionExists(s.description))) {
+    //   newErrors.commands = "Minst ett av de nya commandsen har en beskrivning som redan finns.";
+    // }
 
     setErrors((prev) => ({
       ...prev,
@@ -245,28 +245,39 @@ function AddActionPage() {
 
     if (Object.keys(newErrors).length > 0) return;
 
+    // --- Skapa Payload ---
     const usingNewCategory = categoryMode === "new";
 
+    // 1. Samla ID:n för befintliga commands
     const commandIds = existingSteps.map((s) => s.commandId);
 
-    const payload = {
-      categoryId: usingNewCategory ? undefined : selectedCategoryId || undefined,
-      categoryTitle: usingNewCategory ? newCategoryTitle : undefined,
-      actionTitle: actionTitle.trim(),
-      commandIds,
-      newCommands: newSteps.length
+    // 2. Skapa DTO:er för nya commands
+    const newCommandsPayload = newSteps.length
         ? newSteps.map((s) => ({
             description: s.description.trim(),
             code: s.code.trim(),
           }))
-        : undefined,
-    };
+        : undefined;
+
+    // Bygger payloaden som matchar C# AddActionRequestDTO
+    const payload: CreateActionPayload = {
+      categoryId: usingNewCategory ? undefined : selectedCategoryId || undefined,
+      categoryTitle: usingNewCategory ? newCategoryTitle.trim() : undefined,
+      actionTitle: actionTitle.trim(),
+      commandIds: commandIds.length > 0 ? commandIds : undefined, // Skicka undefined om tom array
+      newCommands: newCommandsPayload,
+    } as CreateActionPayload;
 
     try {
       setSubmitting(true);
-      await CommandService.CreateAction(payload);
+      
+      // Anropar CommandService som returnerar Promise<string> (framgångsmeddelandet)
+      const successMessage = await CommandService.CreateAction(payload); 
+      console.log("Action skapades:", successMessage); // Logga framgångsmeddelandet
 
+      // --- Återställning av state efter framgångsrik skapelse ---
       setActiveStep(0);
+      // ... (fortsätt med all din rensningslogik)
       setCategoryInput("");
       setCategoryMode(null);
       setSelectedCategoryId(null);
@@ -278,8 +289,11 @@ function AddActionPage() {
       setErrors({});
       setCategoryActions([]);
       setAllCommands([]);
+
     } catch (err) {
       console.error("Failed to create action", err);
+      // Här kan du lägga till logik för att visa felet för användaren, t.ex.
+      // setErrors(prev => ({ ...prev, general: "Kunde inte spara action. Se konsolen för detaljer." }));
     } finally {
       setSubmitting(false);
     }
