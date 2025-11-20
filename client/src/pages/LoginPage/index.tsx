@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
 } from "@mui/material";
+import SuccessModal from "../../components/Modals/SuccessModal";
 import { useNavigate } from "react-router-dom"; // Behöver installeras: npm install react-router-dom
 import GoogleIcon from "@mui/icons-material/Google";
 import loginService  from "../../services/loginService"
@@ -21,6 +22,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [createMode, setCreateMode] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState<boolean>(false);
   const navigate = useNavigate(); // Hook från react-router-dom
 
 
@@ -80,8 +82,15 @@ function LoginPage() {
         const success = await userService.CreateUser(username, password)
         if(success){
           setLoading(false)
-          setCreateMode(false)
-          navigate("/MainPage")
+          setIsSuccessModalOpen(true)
+          setTimeout(() => {
+                setIsSuccessModalOpen(false); 
+                setCreateMode(false); 
+                
+                // Navigate the user to the login page
+                navigate("/login");
+                
+            }, 2000);
         }
       }
       catch(error){
@@ -91,6 +100,12 @@ function LoginPage() {
       return;
     }
   }
+
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+    // 3. Navigate to the login page after the user acknowledges the success message
+    navigate("/login"); 
+};
 
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
@@ -289,6 +304,11 @@ function LoginPage() {
         >
           {loading ? "Loading..." : "Skapa användare"}
         </Button>
+        <SuccessModal 
+      open={isSuccessModalOpen} 
+      onClose={handleCloseSuccessModal} // Use the new handler here
+      userName={username} 
+    />
         </Box> }
     </Container>
     
