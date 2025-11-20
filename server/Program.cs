@@ -41,8 +41,9 @@ app.UseAuthorization();
 
 // app.MapGet("/api/users", UserRoutes.GetAllUsers);
 // app.MapGet("/api/users/{id}", UserRoutes.GetUserById);
+
 app.MapPost("/api/login", Login.LoginNoGoogle);
-app.MapPost("/api/users",UserRoutes.CreateUser);
+app.MapPost("/api/create-user",UserRoutes.CreateUser);
 app.MapGet("/login/google", (HttpContext ctx) => {
     var properties = new AuthenticationProperties
     {
