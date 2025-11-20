@@ -18,8 +18,8 @@ createRoot(document.getElementById("root")!).render(
         <CssBaseline />
         <NavBar />
         <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/Login" element={<LoginPage />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/" element={<LoginPage />} />
           <Route path="/AddActionPage" element={<AddActionPage />} />
         </Routes>
       </ThemeProvider>

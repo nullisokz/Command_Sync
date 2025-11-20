@@ -1,0 +1,119 @@
+/* ===================== */
+/* Färg-variabler globalt (Återanvänds från MainPage.css) */
+/* ===================== */
+:root {
+  --bg-color: #212328;      /* bakgrund ytor */
+  --paper-color: #1c1e22;   /* panel/meny */
+  --primary-color: #ffb75a; /* accent (bärnsten/orange) */
+  --text-color: #ffffff;    /* text */
+  --text-muted: #e2e8f0;
+  --success-color: #4caf50; /* Grön för primära knappen */
+}
+
+/* ===================== */
+/* Layout / grundfärger (Samma som MainPage)  */
+/* ===================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", sans-serif;
+  padding: 2vh;
+  height: 96vh;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border-radius: 12px;
+}
+.head-box {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  height: 10%;
+  margin-top: 4vh;
+}
+
+/* ===================== */
+/* Login-specifika stilar */
+/* ===================== */
+
+/* MUI TextField (E-post/Lösenord) anpassning */
+.MuiTextField-root {
+  /* Text i fältet */
+  & .MuiInputBase-input {
+    color: var(--text-color);
+  }
+
+  /* Label: vit normalt, accent vid fokus */
+  & .MuiInputLabel-root {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+  & .MuiInputLabel-root.Mui-focused {
+    color: var(--primary-color);
+  }
+
+  /* Outlined border: grundfärg (grå-ish) */
+  & .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(255, 255, 255, 0.3);
+    transition: border-color 0.2s ease;
+  }
+
+  /* Hover: vit kant */
+  &:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--text-color);
+  }
+
+  /* Fokus: accent-kant */
+  & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 183, 90, 0.2); /* Liten accent-skugga */
+  }
+}
+
+/* MUI Button (Logga in) anpassning */
+
+/* Primär Logga In-knapp (Contained) */
+.MuiButton-containedPrimary {
+  background-color: var(--success-color); /* Grön färg */
+  color: var(--text-color);
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(76, 175, 80, 0.4);
+
+  &:hover {
+    background-color: #388e3c; /* Mörkare grön vid hover */
+  }
+  &.Mui-disabled {
+    background-color: rgba(76, 175, 80, 0.5); /* Ljusare/gråaktig vid disabled */
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Logga in med Google-knapp (Outlined) */
+.MuiButton-outlined {
+  color: var(--text-color);
+  border-color: rgba(255, 255, 255, 0.3);
+
+  &:hover {
+    border-color: var(--text-color); /* Vit kant vid hover */
+    background-color: rgba(255, 255, 255, 0.08); /* Lätt bakgrund */
+  }
+  
+  /* Ikon-färg */
+  & .MuiButton-startIcon {
+    color: var(--primary-color); /* Använd accentfärg för Google-ikonen */
+  }
+}
+
+/* Divider (ELLER) anpassning */
+.MuiDivider-root {
+    border-color: rgba(255, 255, 255, 0.2);
+    margin: 1.5rem 0; /* Extra marginal för att separera formulären */
+}
+
+.MuiDivider-wrapper {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}

@@ -39,6 +39,13 @@ CREATE TABLE actions_x_commands (
       FOREIGN KEY (action_id)  REFERENCES actions(id)  ON DELETE CASCADE
 );
 
+CREATE TABLE public.users_x_actions (
+	user_id int NOT NULL,
+	actions_id int NOT NULL,
+	CONSTRAINT users_x_actions_users_fk FOREIGN KEY (user_id) REFERENCES public.users(id),
+	CONSTRAINT users_x_actions_actions_fk FOREIGN KEY (actions_id) REFERENCES public.actions(id)
+);
+
 -- (Valfritt) Lägg in lite testdata
 INSERT INTO users (name, password) VALUES ('Viktor', 'DT123'), ('Oskar', 'EJ123');
 

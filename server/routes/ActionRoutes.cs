@@ -115,8 +115,14 @@ public class ActionRoutes
 
     // I ActionRoutes.cs
 
-public static async Task<Results<Ok<string>, BadRequest<string>>> AddAction(AddActionRequestDTO data, NpgsqlDataSource db)
+public static async Task<Results<Ok<string>, BadRequest<string>>> AddAction(AddActionRequestDTO data, NpgsqlDataSource db, HttpContext ctx)
     {
+        var userId = ctx.Session.GetInt32("id");
+        if (userId == null)
+        {
+            return TypedResults.BadRequest("User must be logged in to add an action.");
+        }
+
         // --- Validering ---
         if (string.IsNullOrWhiteSpace(data.actionTitle))
         {
@@ -209,6 +215,14 @@ public static async Task<Results<Ok<string>, BadRequest<string>>> AddAction(AddA
                 linkCmd.Parameters.AddWithValue("@stepOrder", i + 1);
                 await linkCmd.ExecuteNonQueryAsync();
             }
+
+            await using var userActionCmd = new NpgsqlCommand(
+                "INSERT INTO users_x_actions (user_id, actions_id) VALUES (@userId, @actionId)", 
+                conn, 
+                transaction
+            );
+            userActionCmd.Parameters.AddWithValue("@userId", userId.Value);
+            userActionCmd.Parameters.AddWithValue("@actionId", actionId);
 
             await transaction.CommitAsync();
 

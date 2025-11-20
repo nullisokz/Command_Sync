@@ -13,19 +13,6 @@ import loginService  from "../../services/loginService"
 import "./LoginPage.css";
 import userService from "../../services/userService";
 
-// Simulerad logik för inloggning. Ersätt med din riktiga backend-logik sen.
-// const simulateLogin = async (
-//   email?: string,
-//   password?: string,
-//   isGoogleLogin: boolean = false
-// ) => {
-//   return new Promise<boolean>((resolve) => {
-//     setTimeout(() => {
-//       // Simulerar lyckad inloggning efter 1 sekund
-//       resolve(true);
-//     }, 1000);
-//   });
-// };
 
 function LoginPage() {
   const [username, setUsername] = useState("");
