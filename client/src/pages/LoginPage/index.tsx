@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom"; // Behöver installeras: npm ins
 import GoogleIcon from "@mui/icons-material/Google";
 import loginService  from "../../services/loginService"
 import "./LoginPage.css";
+import userService from "../../services/userService";
 
 // Simulerad logik för inloggning. Ersätt med din riktiga backend-logik sen.
 // const simulateLogin = async (
@@ -29,8 +30,10 @@ import "./LoginPage.css";
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [createMode, setCreateMode] = useState(false);
   const navigate = useNavigate(); // Hook från react-router-dom
 
 
@@ -80,6 +83,28 @@ function LoginPage() {
   //   }
   // };
 
+    const handleCreateUser = async (username:string,password:string,password2:string) => {
+      setError("");
+      setLoading(true);
+
+      if(password === password2){
+
+      try{
+        const success = await userService.CreateUser(username, password)
+        if(success){
+          setLoading(false)
+          setCreateMode(false)
+          navigate("/login")
+        }
+      }
+      catch(error){
+        throw error;
+      }
+    }else{
+      return;
+    }
+  }
+
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
       <div className="head-box">
@@ -87,7 +112,7 @@ function LoginPage() {
           Välkommen
         </Typography>
       </div>
-
+      {!createMode ? 
       <Box
         className="login-card"
         sx={{
@@ -154,6 +179,24 @@ function LoginPage() {
           {loading ? "Loggar in..." : "Logga in"}
         </Button>
 
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => setCreateMode(true)}
+          disabled={loading}
+          sx={{
+            padding: "0.75rem",
+            fontSize: "1rem",
+            backgroundColor: "#d8d406ff", // Grön färg för att matcha en "action"-knapp
+            "&:hover": {
+              backgroundColor: "#5f6903ff",
+            },
+          }}
+          >{loading ? "Directing..." : "Create user"}
+
+          </Button>
+
         {/* --- Avdelare för Logga in med Google --- */}
         <Divider sx={{ color: "rgba(255, 255, 255, 0.5)", margin: "0.5rem 0" }}>
           ELLER
@@ -180,7 +223,88 @@ function LoginPage() {
           Logga in med Google
         </Button>
       </Box>
+
+      : 
+
+      <Box
+        className="login-card"
+        sx={{
+          maxWidth: 420,
+          width: "100%",
+          margin: "0 auto",
+          padding: "2rem",
+          borderRadius: "16px",
+          backgroundColor: "rgba(15,15,20,0.96)",
+          boxShadow: "0 12px 40px rgba(0,0,0,0.5)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5rem",
+        }}
+      >
+        <Typography variant="h5" component="h2" sx={{ color: "white", textAlign: "center", fontWeight: 600 }}>
+          Logga in
+        </Typography>
+
+        {/* --- Formulär för E-post och Lösenord --- */}
+        <TextField
+          label="E-post"
+          variant="outlined"
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          sx={{ input: { color: 'white' }, label: { color: 'rgba(255, 255, 255, 0.7)' }, fieldset: { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{ style: { color: 'white' } }}
+        />
+        <TextField
+          label="Lösenord"
+          variant="outlined"
+          type="password"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{ input: { color: 'white' }, label: { color: 'rgba(255, 255, 255, 0.7)' }, fieldset: { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{ style: { color: 'white' } }}
+        />
+        <TextField
+          label="Upprepa Lösenord"
+          variant="outlined"
+          type="password"
+          fullWidth
+          value={password2}
+          onChange={(e) => setPassword2(e.target.value)}
+          sx={{ input: { color: 'white' }, label: { color: 'rgba(255, 255, 255, 0.7)' }, fieldset: { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
+          InputLabelProps={{ shrink: true }}
+          InputProps={{ style: { color: 'white' } }}
+        />
+
+        {error && (
+          <Typography color="error" sx={{ textAlign: "center" }}>
+            {error}
+          </Typography>
+        )}
+
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          onClick={() => handleCreateUser(username, password, password2)}
+          disabled={loading}
+          sx={{
+            padding: "0.75rem",
+            fontSize: "1rem",
+            backgroundColor: "#4caf50", // Grön färg för att matcha en "action"-knapp
+            "&:hover": {
+              backgroundColor: "#388e3c",
+            },
+          }}
+        >
+          {loading ? "Loading..." : "Skapa användare"}
+        </Button>
+        </Box> }
     </Container>
+    
   );
 }
 
