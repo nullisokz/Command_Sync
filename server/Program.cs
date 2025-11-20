@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 
 
 var dataSourceBuilder = new NpgsqlDataSourceBuilder("Host=localhost;Database=commandsyncdb;Username=postgres;Password=password123;Port=5430");
@@ -13,6 +14,15 @@ var db = dataSourceBuilder.Build();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<NpgsqlDataSource>(db);
+builder.Services.AddScoped<PasswordHasher<string>>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    // Session options
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
@@ -25,12 +35,14 @@ builder.Services.AddAuthentication(options => {
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseSession();        // ⬅️ MOVED TO HERE
 app.UseAuthentication();
 app.UseAuthorization();
 
 // app.MapGet("/api/users", UserRoutes.GetAllUsers);
 // app.MapGet("/api/users/{id}", UserRoutes.GetUserById);
-// app.MapPost("/api/users",UserRoutes.CreateUser);
+app.MapGet("/api/login", Login.LoginNoGoogle);
+app.MapPost("/api/users",UserRoutes.CreateUser);
 app.MapGet("/login/google", (HttpContext ctx) => {
     var properties = new AuthenticationProperties
     {
