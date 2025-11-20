@@ -81,7 +81,7 @@ function LoginPage() {
         if(success){
           setLoading(false)
           setCreateMode(false)
-          navigate("/login")
+          navigate("/MainPage")
         }
       }
       catch(error){

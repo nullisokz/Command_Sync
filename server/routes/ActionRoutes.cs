@@ -223,9 +223,9 @@ public static async Task<Results<Ok<string>, BadRequest<string>>> AddAction(AddA
             );
             userActionCmd.Parameters.AddWithValue("@userId", userId.Value);
             userActionCmd.Parameters.AddWithValue("@actionId", actionId);
+            await userActionCmd.ExecuteNonQueryAsync();
 
             await transaction.CommitAsync();
-
             return TypedResults.Ok($"Action '{data.actionTitle}' (ID: {actionId}) created successfully.");
         }
         catch (Exception ex)
