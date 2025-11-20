@@ -24,7 +24,7 @@
   background-color: var(--bg-color);
   border-radius: 12px;
 }
-.head-box { display:flex; justify-content:center; flex-direction:row; width:100%; align-items:center; height:10%; }
+.head-box { display:flex; justify-content:center; flex-direction:row; width:100%; align-items:center; height:10%; margin-top: 4vh; }
 .subtitle { color: #94a3b8; margin-bottom: 1rem; }
 
 /* ===================== */

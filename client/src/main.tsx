@@ -9,6 +9,7 @@ import AddActionPage from "./pages/AddActionPage"; // skapa denna om du inte gjo
 
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { appTheme } from "./theme/theme";
+import LoginPage from "./pages/LoginPage";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
         <NavBar />
         <Routes>
           <Route path="/" element={<MainPage />} />
+          <Route path="/Login" element={<LoginPage />} />
           <Route path="/AddActionPage" element={<AddActionPage />} />
         </Routes>
       </ThemeProvider>
