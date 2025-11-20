@@ -9,43 +9,45 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // Behöver installeras: npm install react-router-dom
 import GoogleIcon from "@mui/icons-material/Google";
+import loginService  from "../../services/loginService"
 import "./LoginPage.css";
 
 // Simulerad logik för inloggning. Ersätt med din riktiga backend-logik sen.
-const simulateLogin = async (
-  email?: string,
-  password?: string,
-  isGoogleLogin: boolean = false
-) => {
-  return new Promise<boolean>((resolve) => {
-    setTimeout(() => {
-      // Simulerar lyckad inloggning efter 1 sekund
-      resolve(true);
-    }, 1000);
-  });
-};
+// const simulateLogin = async (
+//   email?: string,
+//   password?: string,
+//   isGoogleLogin: boolean = false
+// ) => {
+//   return new Promise<boolean>((resolve) => {
+//     setTimeout(() => {
+//       // Simulerar lyckad inloggning efter 1 sekund
+//       resolve(true);
+//     }, 1000);
+//   });
+// };
 
 function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate(); // Hook från react-router-dom
 
-  const handleEmailPasswordLogin = async () => {
+
+  const handleEmailPasswordLogin = async (username: string, password: string) => {
     setError("");
     setLoading(true);
 
-    if (!email || !password) {
+    if (!username || !password) {
       setError("Vänligen fyll i både e-post och lösenord.");
       setLoading(false);
       return;
     }
-
+   
     try {
-      const success = await simulateLogin(email, password);
+      const success = await loginService.Login(username, password);
       if (success) {
-        // Vid lyckad inloggning, navigera till MainPage
+        console.log("LOGGED IN")
         navigate("/"); // Se till att din MainPage har sökvägen '/main' i din router
       } else {
         setError("Inloggning misslyckades. Kontrollera dina uppgifter.");
@@ -58,25 +60,25 @@ function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setError("");
-    setLoading(true);
+  // const handleGoogleLogin = async () => {
+  //   setError("");
+  //   setLoading(true);
 
-    try {
-      const success = await simulateLogin(undefined, undefined, true);
-      if (success) {
-        // Vid lyckad inloggning, navigera till MainPage
-        navigate("/main");
-      } else {
-        setError("Inloggning med Google misslyckades.");
-      }
-    } catch (err) {
-      setError("Ett oväntat fel uppstod vid inloggning med Google.");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   try {
+  //     const success = await simulateLogin(undefined, undefined, true);
+  //     if (success) {
+  //       // Vid lyckad inloggning, navigera till MainPage
+  //       navigate("/main");
+  //     } else {
+  //       setError("Inloggning med Google misslyckades.");
+  //     }
+  //   } catch (err) {
+  //     setError("Ett oväntat fel uppstod vid inloggning med Google.");
+  //     console.error(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <Container className="app-container" style={{ maxWidth: "100vw" }}>
@@ -110,8 +112,8 @@ function LoginPage() {
           label="E-post"
           variant="outlined"
           fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           sx={{ input: { color: 'white' }, label: { color: 'rgba(255, 255, 255, 0.7)' }, fieldset: { borderColor: 'rgba(255, 255, 255, 0.3)' } }}
           InputLabelProps={{ shrink: true }}
           InputProps={{ style: { color: 'white' } }}
@@ -138,7 +140,7 @@ function LoginPage() {
           variant="contained"
           color="primary"
           fullWidth
-          onClick={handleEmailPasswordLogin}
+          onClick={() => handleEmailPasswordLogin(username, password)}
           disabled={loading}
           sx={{
             padding: "0.75rem",
@@ -161,7 +163,7 @@ function LoginPage() {
         <Button
           variant="outlined"
           fullWidth
-          onClick={handleGoogleLogin}
+          //onClick={handleGoogleLogin}
           disabled={loading}
           startIcon={<GoogleIcon />}
           sx={{
